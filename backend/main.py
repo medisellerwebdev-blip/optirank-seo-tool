@@ -10,16 +10,17 @@ load_dotenv()
 
 app = FastAPI(title="OptiRank AI API")
 
-# Configure CORS
-origins = [
-    "http://localhost:3000",
-    "https://brand-wise.web.app",
-    "https://brand-wise.firebaseapp.com",
-]
+@app.middleware("http")
+async def log_requests(request, call_next):
+    print(f"Incoming request: {request.method} {request.url}")
+    response = await call_next(request)
+    print(f"Response status: {response.status_code}")
+    return response
 
+# Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
