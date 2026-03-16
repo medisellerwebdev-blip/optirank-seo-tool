@@ -1,0 +1,44 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Outfit", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+@layer base {
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    color: var(--color-slate-900);
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    font-weight: 700;
+  }
+  
+  p {
+    margin-bottom: 1.25rem;
+    line-height: 1.75;
+    color: var(--color-slate-700);
+  }
+
+  .dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 {
+    color: var(--color-slate-50);
+  }
+
+  .dark p {
+    color: var(--color-slate-300);
+  }
+}
+
+@layer utilities {
+  .prose h1 { @apply text-3xl font-bold mb-6 mt-8 border-b pb-2 text-slate-900 dark:text-slate-50; }
+  .prose h2 { @apply text-2xl font-bold mb-4 mt-8 text-slate-900 dark:text-slate-50; }
+  .prose h3 { @apply text-xl font-semibold mb-3 mt-6 text-slate-900 dark:text-slate-50; }
+  .prose p { @apply text-base leading-relaxed mb-5 text-slate-700 dark:text-slate-300; }
+  .prose ul { @apply list-disc pl-6 mb-5 space-y-2 text-slate-700 dark:text-slate-300; }
+  .prose ol { @apply list-decimal pl-6 mb-5 space-y-2 text-slate-700 dark:text-slate-300; }
+  .prose li { @apply mb-1; }
+  .prose strong { @apply font-bold text-slate-950 dark:text-white; }
+  .prose blockquote { @apply border-l-4 border-indigo-500 pl-4 py-3 italic my-8 bg-indigo-50/50 dark:bg-indigo-900/20 rounded-r text-slate-800 dark:text-slate-200; }
+}
