@@ -64,11 +64,31 @@ class SEOAnalyzer:
 
                 # Format elements for frontend
                 elements = [
-                    {"name": "Title Tag", "status": "success" if 30 <= len(title) <= 60 else "warning", "message": title},
-                    {"name": "Meta Description", "status": "success" if len(desc) > 120 else "warning", "message": desc},
-                    {"name": "H1 Heading", "status": "success" if len(headings["h1"]) == 1 else "error", "message": f"{len(headings['h1'])} detected"},
-                    {"name": "Favicon", "status": "success" if has_favicon else "warning", "message": "Present" if has_favicon else "Missing"},
-                    {"name": "Robots.txt", "status": "success" if has_robots else "warning", "message": "Detected" if has_robots else "Missing"}
+                    {
+                        "name": "Title Tag", 
+                        "status": "success" if 30 <= len(title) <= 60 else "warning", 
+                        "message": f"{title} ({len(title)} chars). Optimal is 30-60."
+                    },
+                    {
+                        "name": "Meta Description", 
+                        "status": "success" if 120 <= len(desc) <= 160 else "warning", 
+                        "message": f"{desc[:100]}... ({len(desc)} chars). Optimal is 120-160."
+                    },
+                    {
+                        "name": "H1 Heading", 
+                        "status": "success" if len(headings["h1"]) == 1 else "error", 
+                        "message": f"Found {len(headings['h1'])}. Important: Only 1 H1 is allowed per page for SEO." if len(headings["h1"]) != 1 else "Perfect! 1 H1 detected."
+                    },
+                    {
+                        "name": "Favicon", 
+                        "status": "success" if has_favicon else "warning", 
+                        "message": "Browser icon found." if has_favicon else "Missing favicon. This impacts brand recognition."
+                    },
+                    {
+                        "name": "Robots.txt", 
+                        "status": "success" if has_robots else "warning", 
+                        "message": "Directives detected." if has_robots else "Missing robots.txt. Search engines might get lost."
+                    }
                 ]
 
                 return {

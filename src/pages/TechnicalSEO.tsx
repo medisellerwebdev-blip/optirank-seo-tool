@@ -43,6 +43,29 @@ export function TechnicalSEO() {
     }
   }
 
+  const downloadSitemap = () => {
+    const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>${url}</loc>
+    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
+    <priority>1.0</priority>
+  </url>
+</urlset>`;
+    const blob = new Blob([sitemap], { type: 'application/xml' });
+    const url_path = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url_path;
+    a.download = 'sitemap.xml';
+    a.click();
+    URL.revokeObjectURL(url_path);
+  };
+
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text);
+    alert("Copied to clipboard!");
+  }
+
   return (
     <div className="space-y-6">
       <div>
@@ -82,6 +105,7 @@ export function TechnicalSEO() {
 
       {analyzed && (
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+          {/* Top Metric Cards */}
           <div className="grid gap-4 md:grid-cols-3">
             <Card>
               <CardContent className="p-6 flex items-center gap-4">
@@ -121,6 +145,7 @@ export function TechnicalSEO() {
           </div>
 
           <div className="grid gap-6 md:grid-cols-2">
+            {/* Detailed Audit Elements */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -130,13 +155,13 @@ export function TechnicalSEO() {
               <CardContent>
                 <ul className="space-y-4">
                   {auditData.elements.map((el: any, i: number) => (
-                    <li key={i} className="flex items-start gap-3">
+                    <li key={i} className="flex items-start gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800">
                       {el.status === 'success' && <CheckCircle2 className="h-5 w-5 text-emerald-500 shrink-0 mt-0.5" />}
                       {el.status === 'warning' && <AlertTriangle className="h-5 w-5 text-amber-500 shrink-0 mt-0.5" />}
                       {el.status === 'error' && <XCircle className="h-5 w-5 text-rose-500 shrink-0 mt-0.5" />}
-                      <div>
-                        <p className="font-medium text-sm">{el.name}</p>
-                        <p className="text-xs text-slate-500">{el.message}</p>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-bold text-sm mb-1">{el.name}</p>
+                        <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed italic">{el.message}</p>
                       </div>
                     </li>
                   ))}
@@ -145,6 +170,7 @@ export function TechnicalSEO() {
             </Card>
 
             <div className="space-y-6">
+              {/* Tool Generators */}
               <Card>
                 <CardHeader className="pb-3">
                   <CardTitle className="text-base flex items-center gap-2">
@@ -153,14 +179,14 @@ export function TechnicalSEO() {
                   <CardDescription>Generated based on best practices.</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <pre className="text-xs bg-slate-950 text-slate-50 p-4 rounded-lg overflow-x-auto whitespace-pre-wrap">
+                  <pre className="text-xs bg-slate-950 text-slate-50 p-4 rounded-lg overflow-x-auto whitespace-pre-wrap font-mono mb-4">
 {auditData.robotsTxt}
                   </pre>
                   <Button 
                     variant="outline" 
                     size="sm" 
-                    className="w-full mt-4"
-                    onClick={() => navigator.clipboard.writeText(auditData.robotsTxt)}
+                    className="w-full"
+                    onClick={() => copyToClipboard(auditData.robotsTxt)}
                   >
                     Copy robots.txt
                   </Button>
@@ -174,8 +200,10 @@ export function TechnicalSEO() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm text-slate-500 mb-4">Found {auditData.sitemapPages} pages. Click below to generate and download the XML sitemap.</p>
-                  <Button variant="outline" size="sm" className="w-full">Generate sitemap.xml</Button>
+                  <p className="text-sm text-slate-500 mb-4">Click below to generate and download a sample XML sitemap for search engines.</p>
+                  <Button variant="outline" size="sm" className="w-full" onClick={downloadSitemap}>
+                    Generate & Download sitemap.xml
+                  </Button>
                 </CardContent>
               </Card>
             </div>
