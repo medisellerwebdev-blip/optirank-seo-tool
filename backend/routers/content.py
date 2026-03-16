@@ -10,7 +10,7 @@ ai_engine = AIEngine()
 
 @router.post("/generate")
 async def generate_content(
-    keyword: str = Form(...),
+    keyword: Optional[str] = Form(None),
     context: Optional[str] = Form(""),
     url: Optional[str] = Form(""),
     files: Optional[List[UploadFile]] = File(None),

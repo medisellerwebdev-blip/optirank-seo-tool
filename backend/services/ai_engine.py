@@ -3,8 +3,9 @@ import json
 import base64
 from typing import List, Optional, Dict, Any
 from openai import OpenAI
-import google.generativeai as genai
+from google.generativeai import types
 from dotenv import load_dotenv
+from services.seo_analyzer import SEOAnalyzer
 
 load_dotenv()
 
@@ -25,28 +26,42 @@ class AIEngine:
 
         # Default Provider
         self.provider = os.getenv("AI_PROVIDER", "openai").lower()
+        self.seo_analyzer = SEOAnalyzer()
 
     def _get_provider(self) -> str:
         # We can make this dynamic if we add a database setting or global state
         return os.getenv("AI_PROVIDER", "openai").lower()
 
-    async def generate_seo_content(self, keyword: str, context: str = "", url: str = "", files: List[Dict[str, Any]] = []) -> Dict[str, Any]:
-        prompt = f"""
-        Generate highly optimized SEO and AEO content based on:
-        - Target Keyword: {keyword}
-        - Additional Context: {context}
-        - Reference URL: {url}
+    async def generate_seo_content(self, keyword: Optional[str] = None, context: str = "", url: str = "", files: List[Dict[str, Any]] = []) -> Dict[str, Any]:
+        # Scrape URL if provided for more context
+        scraped_content = ""
+        if url:
+            analysis = await self.seo_analyzer.analyze_url(url)
+            if "raw" in analysis:
+                raw = analysis["raw"]
+                scraped_content = f"URL Content: Title: {raw.get('title')}, Meta: {raw.get('meta_description')}, Keywords: {raw.get('detected_keywords')}, Headings: {raw.get('headings')}"
 
-        Requirements:
-        1. Full article in HTML (using h1, h2, h3, p, strong, lists). 
-        2. Ensure beautiful vertical spacing by using appropriate HTML tags. 
-        3. Do NOT include any markdown code blocks (like ```html) inside the JSON 'content' field.
-        4. Meta Title (max 60 chars) and Meta Description (max 160 chars).
-        5. AEO section with direct answers to potential user questions.
-        6. FAQ Schema (JSON-LD format).
-        7. Keyword suggestions with estimated density.
-        8. Internal linking suggestions based on common SEO structures.
-        9. Readability score and SEO score (0-100).
+        prompt = f"""
+        Generate highly optimized SEO and AEO content based on the provided inputs.
+        
+        Inputs:
+        - Target Keyword: {keyword if keyword else "Not provided (Derive from other inputs)"}
+        - User Context: {context if context else "Not provided"}
+        - Reference URL Analyzed: {url if url else "Not provided"}
+        - Scraped Data from URL: {scraped_content if scraped_content else "N/A"}
+        - Image/Media context: Provided in vision analysis (if any)
+
+        Instructions:
+        1. If 'Target Keyword' is not provided, you MUST analyze the 'Scraped Data', 'User Context', and any images to determine the most relevant topic/keyword and generate content for that.
+        2. Full article in HTML (using h1, h2, h3, p, strong, lists).
+        3. Ensure beautiful vertical spacing by using appropriate HTML tags.
+        4. Do NOT include any markdown code blocks (like ```html) inside the JSON 'content' field.
+        5. Meta Title (max 60 chars) and Meta Description (max 160 chars).
+        6. AEO section with direct answers to potential user questions.
+        7. FAQ Schema (JSON-LD format).
+        8. Keyword suggestions with estimated density.
+        9. Internal linking suggestions based on common SEO structures.
+        10. Readability score and SEO score (0-100).
 
         Return ONLY a JSON object with this structure:
         {{

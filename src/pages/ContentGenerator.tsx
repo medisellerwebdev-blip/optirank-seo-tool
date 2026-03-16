@@ -24,7 +24,7 @@ export function ContentGenerator() {
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const handleGenerate = async () => {
-    if (!keyword && !context && files.length === 0) return;
+    if (!keyword && !context && files.length === 0 && !url) return;
     
     setIsGenerating(true)
     try {
@@ -109,10 +109,11 @@ export function ContentGenerator() {
               <p className="text-sm text-slate-500 dark:text-slate-400">Review and refine your optimized content.</p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <Button 
                 variant="outline" 
-                className="gap-2"
+                size="sm"
+                className="gap-2 flex-1 sm:flex-none"
                 onClick={() => {
                     navigator.clipboard.writeText(generatedContent);
                     alert("HTML content copied to clipboard!");
@@ -121,7 +122,8 @@ export function ContentGenerator() {
                 <Copy className="h-4 w-4" /> Copy HTML
             </Button>
             <Button 
-                className="gap-2"
+                size="sm"
+                className="gap-2 flex-1 sm:flex-none"
                 onClick={() => {
                     const blob = new Blob([generatedContent], { type: 'text/markdown' });
                     const url = URL.createObjectURL(blob);
@@ -253,7 +255,7 @@ export function ContentGenerator() {
         <CardContent className="space-y-6">
           <div className="grid gap-6 md:grid-cols-2">
             <div className="space-y-2">
-              <Label htmlFor="keyword">Product Name or Target Keyword *</Label>
+              <Label htmlFor="keyword">Product Name or Target Keyword</Label>
               <Input 
                 id="keyword" 
                 placeholder="e.g. best running shoes 2024" 
@@ -324,7 +326,7 @@ export function ContentGenerator() {
             )}
           </div>
 
-          <Button className="w-full h-12 text-base" onClick={handleGenerate} disabled={isGenerating || (!keyword && !context && files.length === 0)}>
+          <Button className="w-full h-12 text-base" onClick={handleGenerate} disabled={isGenerating || (!keyword && !context && files.length === 0 && !url)}>
             {isGenerating ? (
               <span className="flex items-center gap-2">
                 <Sparkles className="h-5 w-5 animate-spin" /> Analyzing Inputs & Generating...
