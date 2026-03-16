@@ -5,9 +5,16 @@ import re
 
 class SEOAnalyzer:
     async def analyze_url(self, url: str) -> Dict[str, Any]:
+        # Add protocol if missing
+        if not url.startswith(('http://', 'https://')):
+            url = f'https://{url}'
+            
         try:
-            async with httpx.AsyncClient() as client:
-                response = await client.get(url, timeout=10.0, follow_redirects=True)
+            headers = {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+            }
+            async with httpx.AsyncClient(headers=headers) as client:
+                response = await client.get(url, timeout=15.0, follow_redirects=True)
                 response.raise_for_status()
                 html = response.text
                 
