@@ -173,7 +173,7 @@ export function KeywordResearch() {
                 </Button>
               </CardHeader>
               <CardContent>
-                <div className="rounded-md border border-slate-200 dark:border-slate-800">
+                <div className="rounded-md border border-slate-200 dark:border-slate-800 overflow-x-auto scrollbar-thin">
                   <table className="w-full text-sm text-left">
                     <thead className="bg-slate-50 text-slate-500 dark:bg-slate-900/50 dark:text-slate-400">
                       <tr>

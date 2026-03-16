@@ -129,8 +129,8 @@ export function Dashboard() {
         </CardContent>
       </Card>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-        <Card className="col-span-4">
+      <div className="grid gap-4 lg:grid-cols-7">
+        <Card className="lg:col-span-4">
           <CardHeader>
             <CardTitle>SEO Score Trend</CardTitle>
             <CardDescription>Your website's SEO health over the last 7 days.</CardDescription>
@@ -149,7 +149,7 @@ export function Dashboard() {
             </ResponsiveContainer>
           </CardContent>
         </Card>
-        <Card className="col-span-3">
+        <Card className="lg:col-span-3">
           <CardHeader>
             <CardTitle>Recent Projects</CardTitle>
             <CardDescription>Latest optimizations and audits.</CardDescription>
